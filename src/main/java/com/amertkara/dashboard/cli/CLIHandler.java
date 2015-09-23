@@ -3,10 +3,7 @@ package com.amertkara.dashboard.cli;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -27,113 +24,10 @@ import com.amertkara.dashboard.data.Game;
 public class CLIHandler implements CommandLineRunner {
 
 	private CLIStatuses status = CLIStatuses.IDLE;
-    private Pattern startGamePattern = Pattern.compile(CLIConstants.REGEX_START_GAME);
-    private Pattern scoreUpdatePattern = Pattern.compile(CLIConstants.REGEX_SCORE_UPDATE);
     
     @Autowired
     public Game game;
     
-    /**
-     * Parses the provided string and extracts the team names.
-     * 
-     * @param input Provided string {@see CLIConstants#REGEX_START_GAME}
-     * @return A list of team names in the order of homeTeam and awayTeam
-     * @throws IllegalStateException It occurs if the provided input doesn't 
-     * satisfy the expected format.
-     */
-    private List<String> getTeamsFromInput(String input) throws IllegalStateException {
-    	List<String> result = new ArrayList<String>();
-    	Matcher matcher = startGamePattern.matcher(input);
-    	matcher.find();
-    	result.add(matcher.group(1));
-    	result.add(matcher.group(2));
-    	
-    	return result;
-    }
-    
-    /**
-     * Parses the provided string and extracts the score update details.
-     * 
-     * @param input Provided string {@see CLIConstants#REGEX_SCORE_UPDATE}
-     * @return A list of time, team and player (in the same order)
-     * @throws IllegalStateException It occurs if the provided input doesn't 
-     * satisfy the expected format.
-     */
-    private List<String> getScoreUpdateFromInput(String input) throws IllegalStateException {
-    	List<String> result = new ArrayList<String>();
-    	Matcher matcher = scoreUpdatePattern.matcher(input);
-    	matcher.find();
-    	result.add(matcher.group(1));
-    	result.add(matcher.group(2));
-    	result.add(matcher.group(3));
-    	
-    	return result;
-    }
-    
-    /**
-     * Processes the provided input and determines the command. It also outputs
-     * corresponding error statement to STDERR.
-     * 
-     * ASSUMPTION: RE. Requirement 5.a "If the Football Scoring Dashboard is given 
-     * any commands while a game is not in progress it should report 'No game 
-     * currently in progress'.";
-     * 	"any commands" in the requirement is assumed to exclude the Start game
-     *  command because that command is executed when there are no games in 
-     *  progress. Therefore, if the user issues "Print", "End" or "<minute> 
-     *  '<Team>' <name of scorer>" and there are no games, it will output "No 
-     *  game currently in progress"
-     * 
-     * @param input Provided string
-     * @return Returns the command. If the assumption case holds, it will return
-     * unknown command.
-     */
-    private CLICommands getCommand(String input) {
-    	@SuppressWarnings("unused")
-		List<String> dummy;
-    	CLICommands result = CLICommands.UNKNOWN;
-    	
-    	if (input.equals(CLIConstants.PRINT_SCORE)) {
-    		result = CLICommands.PRINT;
-    	} else if (input.equals(CLIConstants.FINISH_GAME)) {
-    		result = CLICommands.FINISH;
-    	} else {
-        	try {
-        		dummy = getScoreUpdateFromInput(input);
-        		result = CLICommands.UPDATE;
-        	} catch (IllegalStateException ise) {}
-    	}
-    	/*
-    	 *  The input is a known command (except Start game) but there is no
-    	 *  game
-    	 */
-    	if (!result.equals(CLICommands.UNKNOWN) && status.equals(CLIStatuses.IDLE)) {
-    		System.err.println(CLIConstants.ERROR_NO_GAME_IP);
-    		return CLICommands.UNKNOWN;
-    	}
-    	
-    	/*
-    	 *  The input is an unknown command (except Start game) but there is a 
-    	 *  game in progress
-    	 */
-    	if (result.equals(CLICommands.UNKNOWN) && status.equals(CLIStatuses.GAME_IN_PROGRESS)) {
-    		System.err.println(CLIConstants.ERROR_PRINT_GAME_DETAILS);
-    	}
-    	
-    	if (!status.equals(CLIStatuses.GAME_IN_PROGRESS)) {
-        	try {
-        		dummy = getTeamsFromInput(input);
-        		result = CLICommands.START;
-        	} catch (IllegalStateException ise) {
-        		if (result.equals(CLICommands.UNKNOWN) && status.equals(CLIStatuses.IDLE)) {
-        			// The command is unknown
-        			System.err.println(CLIConstants.ERROR_START_GAME );
-        		}
-        	}
-    	}
-    	
-    	return result;
-    }
-
     /**
      * Highest precedence is given to make sure that this runner is executed 
      * first.
@@ -154,10 +48,10 @@ public class CLIHandler implements CommandLineRunner {
         // Enter the read command line loop
         try {
             while((input=br.readLine()) != null) {
-            	CLICommands command = getCommand(input);
+            	CLICommands command = CLIUtils.getCommand(input, status);
             	switch (command) {
 					case START:
-						List<String> teamNames = getTeamsFromInput(input);
+						List<String> teamNames = CLIUtils.getTeamsFromInput(input);
 						try {
 							game.start(teamNames.get(0), teamNames.get(1));
 						} catch (IllegalArgumentException iae) {
@@ -170,7 +64,7 @@ public class CLIHandler implements CommandLineRunner {
 						break;
 					
 					case UPDATE:
-						List<String> scoreUpdate = getScoreUpdateFromInput(input);
+						List<String> scoreUpdate = CLIUtils.getScoreUpdateFromInput(input);
 						try {
 							game.updateScore(scoreUpdate.get(0), scoreUpdate.get(1), scoreUpdate.get(2));
 						} catch (IllegalArgumentException iae) {

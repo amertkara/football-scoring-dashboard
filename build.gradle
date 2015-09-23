@@ -30,6 +30,7 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter"
     
     testCompile "junit:junit"
+    testCompile "org.springframework:spring-test"
 }
 
 task wrapper(type: Wrapper) {

@@ -15,20 +15,20 @@ public class CLIConstants {
      * 2 45-minute halves and 2 15-minute halves for the extended period. 
      * To accommodate exceptions, the maximum allowed minute is 130 minutes.
      */
-    public static String REGEX_SCORE_UPDATE = "^([0-9]{1,2}|1[0-2]{1}[0-9]{1}|130) '([a-zA-Z]+)' ([a-zA-Z]+)$";
-    public static String FINISH_GAME = "End";
-    public static String PRINT_SCORE = "print";
-    public static String ERROR_START_GAME = "input error - please start a "
+    public final static String REGEX_SCORE_UPDATE = "^([0-9]{1,2}|1[0-2]{1}[0-9]{1}|130) '([a-zA-Z]+)' ([a-zA-Z]+)$";
+    public final static String FINISH_GAME = "End";
+    public final static String PRINT_SCORE = "print";
+    public final static String ERROR_START_GAME = "input error - please start a "
     		+ "game through typing 'Start: '<Name of "
 			+ "Home Team>' vs. '<Name of Away Team>'";
-    public static String ERROR_PRINT_GAME_DETAILS = "input error - please type "
+    public final static String ERROR_PRINT_GAME_DETAILS = "input error - please type "
     		+ "'print' for game details'";
-    public static String ERROR_STD_IO = "An input error occured, quitting.";
-    public static String ERROR_NO_GAME_IP = "No game currently in progress";
-    public static String ERROR_TEAMS_SAME = "Team names cannot be same.";
-    public static String ERROR_TEAM_NO_MATCH = "Team name does not match any of the teams.";
-    public static String GREETING = "Football Scoring Dashboard Application. "
+    public final static String ERROR_STD_IO = "An input error occured, quitting.";
+    public final static String ERROR_NO_GAME_IP = "No game currently in progress";
+    public final static String ERROR_TEAMS_SAME = "Team names cannot be same.";
+    public final static String ERROR_TEAM_NO_MATCH = "Team name does not match any of the teams.";
+    public final static String GREETING = "Football Scoring Dashboard Application. "
     		+ "\nPlease enter your command";
-    public static String GAME_STARTED = "Game between %s and %s started.";
-    public static String GAME_FINISHED = "Game between %s and %s finished,\n%s";
+    public final static String GAME_STARTED = "Game between %s and %s started.";
+    public final static String GAME_FINISHED = "Game between %s and %s finished,\n%s";
 }

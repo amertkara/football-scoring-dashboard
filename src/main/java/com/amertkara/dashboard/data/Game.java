@@ -69,6 +69,24 @@ public class Game {
 	
 	@Override
 	public String toString() {
-		return String.format("%s vs. %s", homeTeam.toString(), awayTeam.toString());
+		if (homeTeam != null && awayTeam != null) {
+			return String.format("%s vs. %s", homeTeam.toString(), awayTeam.toString());
+		} else {
+			return "";
+		}
+	}
+	
+	/**
+	 * @return the homeTeam
+	 */
+	public Team getHomeTeam() {
+		return homeTeam;
+	}
+
+	/**
+	 * @return the awayTeam
+	 */
+	public Team getAwayTeam() {
+		return awayTeam;
 	}
 }
