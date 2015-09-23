@@ -20,10 +20,10 @@ public class GameTests {
 	@Autowired
 	public Game game;
 	
-	private static String TEAM1 = "team1";
-	private static String TEAM2 = "team2";
-	private static String TEAM3 = "team3";
-	private static String PLAYER1 = "player1";
+	protected final static String TEAM1 = "team1";
+	protected final static String TEAM2 = "team2";
+	protected final static String TEAM3 = "team3";
+	protected final static String PLAYER1 = "player1";
 
 	@Test
 	public void testStart() throws Exception {
