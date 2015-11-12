@@ -1,0 +1,9 @@
+# Config file for automatic testing at travis-ci.org
+
+language: java
+
+java:
+  - "1.8"
+
+./gradlew check
+./gradle2 test
