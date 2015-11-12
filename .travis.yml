@@ -7,4 +7,4 @@ jdk:
 
 script: 
   - "./gradlew check"
-  - "./gradle2 test"
+  - "./gradlew test"
